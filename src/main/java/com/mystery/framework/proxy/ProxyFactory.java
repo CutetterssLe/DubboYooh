@@ -18,7 +18,7 @@ public class ProxyFactory<T> {
 
     @SuppressWarnings("unchecked")
     public static <T> T getProxy(final Class interfaceClass) {
-        return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), interfaceClass.getInterfaces(), new InvocationHandler() {
+        return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class[]{interfaceClass}, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 Invocation invocation = new Invocation(interfaceClass.getName(), method.getName(), method.getParameterTypes(), args);
@@ -30,6 +30,7 @@ public class ProxyFactory<T> {
                     String res = client.send(url.getHostName(), url.getPort(), invocation);
                     return res;
                 } catch (Exception e) {
+                    System.out.println(e.getMessage());
                     return doMock();
                 }
             }
